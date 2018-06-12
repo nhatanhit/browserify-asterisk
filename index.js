@@ -65,12 +65,12 @@ function getModulePath(callerFile , cartridgePath,requiredPath) {
         var relativePath = pathModule.relative(currentExecuteFilePath,fullPathLoadedModule);
         if(process.platform === 'win32') {
             relativePath = relativePath.replace(/\\/g,'/');
-            relativePath = relativePath.replace(/..\//,'');
-            if(relativePath.substring(0,3) !== '../') {
-                relativePath = './' + relativePath;
-            }
-            relativePath.replace('.js','');
         }
+        relativePath = relativePath.replace(/..\//,'');
+        if(relativePath.substring(0,3) !== '../') {
+            relativePath = './' + relativePath;
+        }
+        relativePath.replace('.js','');
         return relativePath;
     } catch(ex) {
         console.log(ex);
