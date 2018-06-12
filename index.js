@@ -37,7 +37,7 @@ function getCartridgePath(moduleDirectory,cartridgeFilePath) {
     cartridgePath = configureObject[moduleDirectory].cartridge_path;
     return cartridgePath;
 }
-function getModulePath(cartridgePath,requiredPath) {
+function getModulePath(callerFile , cartridgePath,requiredPath) {
     try {
         var basedir =  pathModule.resolve(__dirname,'../../');
         var cartridgesInCTPaths = cartridgePath.split(":");
@@ -50,15 +50,28 @@ function getModulePath(cartridgePath,requiredPath) {
         } else {
             delimiter = '/';
         }
-        //identify the module
+        var loadedCartridge = '';
+        //identify the cartridge will be loaded
         for(var i = 0; i < cartridgesInCTPaths.length ; i++) {
             var fullPath = basedir + delimiter + cartridgesInCTPaths[i] + delimiter + requiredPath.substr(1) + '.js';
             if (fs.existsSync(fullPath)) {
-                resultPath = fullPath;
+                loadedCartridge = cartridgesInCTPaths[i];
                 break;
             }
         }
-        return resultPath;
+        //build the path 
+        var fullPathLoadedModule = pathModule.resolve(__dirname,'../../' + loadedCartridge + '/' + requiredPath.substr(1) + '.js');
+        var currentExecuteFilePath = pathModule.resolve(__dirname,callerFile);
+        var relativePath = pathModule.relative(currentExecuteFilePath,fullPathLoadedModule);
+        if(process.platform === 'win32') {
+            relativePath = relativePath.replace(/\\/g,'/');
+            relativePath = relativePath.replace(/..\//,'');
+            if(relativePath.substring(0,3) !== '../') {
+                relativePath = './' + relativePath;
+            }
+            relativePath.replace('.js','');
+        }
+        return relativePath;
     } catch(ex) {
         console.log(ex);
     }
@@ -72,10 +85,10 @@ var myTransform = transformTools.makeRequireTransform("requireTransform", option
         var requirePath = args[0];
         var currentCartridge = opts.config.directory;
         if(requirePath[0] === '*') {
-            var callerDir = opts.file;
+            var callerFile = opts.file;
             var cartridgePathConfigFile = pathModule.resolve(__dirname,'../../cartridgepath.json');
             var cartridgePath =  getCartridgePath(currentCartridge,cartridgePathConfigFile);
-            var resultPath =  getModulePath(cartridgePath,requirePath);
+            var resultPath =  getModulePath(callerFile , cartridgePath,requirePath);
             var requirePath = 'require("' + resultPath + '")';
             return cb(null,requirePath);
 
