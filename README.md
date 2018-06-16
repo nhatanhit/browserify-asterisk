@@ -52,4 +52,4 @@ The parameter directory in below statement is required
 ```
 
 ## note with grunt-browserify
-grunt-browserify build js modules with asynchrouns mode but browserify-asterisk  is unable to transform js modules that grunt-browserify is running on. The solution for this issue is you should design your js task with synchronous mode.    
+grunt-browserify build js modules with asynchrouns mode but browserify-asterisk  is unable to transform js modules that grunt-browserify is running on. The solution for this issue is you should design your js tasks with synchronous mode.    
