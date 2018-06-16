@@ -1,6 +1,6 @@
 {
   "name": "browserify-asterisk",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "Browser-side require(*/module) the DW style",
   "main": "index.js",
   "scripts": {

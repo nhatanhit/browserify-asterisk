@@ -70,7 +70,7 @@ function getModulePath(callerFile , cartridgePath,requiredPath) {
         if(relativePath.substring(0,3) !== '../') {
             relativePath = './' + relativePath;
         }
-        relativePath.replace('.js','');
+        relativePath = relativePath.replace('.js','');
         return relativePath;
     } catch(ex) {
         console.log(ex);
